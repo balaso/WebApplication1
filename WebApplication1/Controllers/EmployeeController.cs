@@ -13,6 +13,7 @@ namespace WebApplication1.Controllers
 {
     public class EmployeeController : ApiController
     {
+        int employeeId = 6;
         IList<Employee> employees = new List<Employee>()
         {
             new Employee()
@@ -56,6 +57,11 @@ namespace WebApplication1.Controllers
         [HttpPost]
         public Employee addEmployee(Employee employee)
         {
+            employee.EmployeeId = employeeId;
+
+            employeeId++;
+            employees.Add(employee);
+
             Console.WriteLine(" Employee " + employee);
             //MakeRequest("https://localhost:44373/api/employee/1", employee, "POST", "application/json", employee);
             return employee;
