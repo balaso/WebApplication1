@@ -54,8 +54,9 @@ namespace WebApplication1.Controllers
             return employee;
         }
 
+
         [HttpPost]
-        public Employee addEmployee(Employee employee)
+        public IList<Employee> addEmployee(Employee employee)
         {
             employee.EmployeeId = employeeId;
 
@@ -63,10 +64,11 @@ namespace WebApplication1.Controllers
             employees.Add(employee);
 
             Console.WriteLine(" Employee " + employee);
-           return (Employee)MakeRequest("https://localhost:44373/api/employee/1", employee, "GET", "application/json", employee);
-         //   return employee;
+           //return (Employee)MakeRequest("https://localhost:44373/api/employee/2", employee, "GET", "application/json", typeof(Employee));
+            return (IList<Employee>)(Employee)MakeRequest("https://localhost:44373/api/employee", employee, "GET", "application/json", typeof(IList<Employee>));
+            //   return employee;
         }
-        public static object MakeRequest(string requestUrl, object JSONRequest, string JSONmethod, string JSONContentType, object JSONResponseType)
+        public static object MakeRequest(string requestUrl, object JSONRequest, string JSONmethod, string JSONContentType, Type JSONResponseType)
         {
 
             try
@@ -103,7 +105,8 @@ namespace WebApplication1.Controllers
                     StreamReader sr = new StreamReader(stream1);
                     //string resp = response.Content.ReadAsStringAsync().Result; 
                     string strsb = sr.ReadToEnd();
-                    object objResponse = JsonConvert.DeserializeObject<Employee>(strsb);
+                    object objResponse = JsonConvert.DeserializeObject(strsb, JSONResponseType); 
+                    //JsonConvert.DeserializeObject<JSONResponseType>(strsb);
 
                     return objResponse;
                 }
