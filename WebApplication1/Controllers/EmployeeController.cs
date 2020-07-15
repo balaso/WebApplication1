@@ -56,17 +56,23 @@ namespace WebApplication1.Controllers
 
 
         [HttpPost]
-        public IList<Employee> addEmployee(Employee employee)
+        //public IList<Employee> addEmployee(Employee employee)
+            public Employee addEmployee(Employee employee)
         {
             employee.EmployeeId = employeeId;
 
             employeeId++;
-            employees.Add(employee);
+           // employees.Add(employee);
 
             Console.WriteLine(" Employee " + employee);
-           //return (Employee)MakeRequest("https://localhost:44373/api/employee/2", employee, "GET", "application/json", typeof(Employee));
-            return (IList<Employee>)(Employee)MakeRequest("https://localhost:44373/api/employee", employee, "GET", "application/json", typeof(IList<Employee>));
+           return (Employee)MakeRequest("https://localhost:44373/api/employee", employee, "PUT", "application/json", typeof(Employee));
+           // return (IList<Employee>)(Employee)MakeRequest("https://localhost:44373/api/employee", employee, "GET", "application/json", typeof(IList<Employee>));
             //   return employee;
+        }
+        [HttpPut]
+        public Employee updateEmployee(Employee e)
+        {
+            return e;// (Employee)MakeRequest("https://localhost:44373/api/employee", e, "PUT", "application/json", typeof(Employee));
         }
         public static object MakeRequest(string requestUrl, object JSONRequest, string JSONmethod, string JSONContentType, Type JSONResponseType)
         {
@@ -83,7 +89,7 @@ namespace WebApplication1.Controllers
                 }
 
 
-                if("POST".Equals(JSONContentType, StringComparison.OrdinalIgnoreCase))
+                if("POST".Equals(JSONmethod, StringComparison.OrdinalIgnoreCase) || "PUT".Equals(JSONmethod, StringComparison.OrdinalIgnoreCase))
                 {
                     string sb = JsonConvert.SerializeObject(JSONRequest);
                     Byte[] bt = Encoding.UTF8.GetBytes(sb);
