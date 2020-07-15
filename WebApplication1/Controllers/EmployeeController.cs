@@ -63,8 +63,8 @@ namespace WebApplication1.Controllers
             employees.Add(employee);
 
             Console.WriteLine(" Employee " + employee);
-            //MakeRequest("https://localhost:44373/api/employee/1", employee, "POST", "application/json", employee);
-            return employee;
+           return (Employee)MakeRequest("https://localhost:44373/api/employee/1", employee, "GET", "application/json", employee);
+         //   return employee;
         }
         public static object MakeRequest(string requestUrl, object JSONRequest, string JSONmethod, string JSONContentType, object JSONResponseType)
         {
@@ -73,17 +73,22 @@ namespace WebApplication1.Controllers
             {
                 HttpWebRequest request = WebRequest.Create(requestUrl) as HttpWebRequest;
                 //WebRequest WR = WebRequest.Create(requestUrl);   
-                string sb = JsonConvert.SerializeObject(JSONRequest);
+              //
                 request.Method = JSONmethod;
-                request.ContentType = JSONContentType;
+                if (!String.IsNullOrEmpty(JSONContentType))
+                {
+                    request.ContentType = JSONContentType;
+                }
 
-                // "POST";request.ContentType = JSONContentType; // "application/json";
 
-                Byte[] bt = Encoding.UTF8.GetBytes(sb);
-                Stream st = request.GetRequestStream();
-                st.Write(bt, 0, bt.Length);
-                st.Close();
-
+                if("POST".Equals(JSONContentType, StringComparison.OrdinalIgnoreCase))
+                {
+                    string sb = JsonConvert.SerializeObject(JSONRequest);
+                    Byte[] bt = Encoding.UTF8.GetBytes(sb);
+                    Stream st = request.GetRequestStream();
+                    st.Write(bt, 0, bt.Length);
+                    st.Close();
+                }
 
                 using (HttpWebResponse response = request.GetResponse() as HttpWebResponse)
                 {
@@ -98,10 +103,9 @@ namespace WebApplication1.Controllers
                     StreamReader sr = new StreamReader(stream1);
                     //string resp = response.Content.ReadAsStringAsync().Result; 
                     string strsb = sr.ReadToEnd();
-                    //object objResponse = JsonConvert.DeserializeObject(strsb, JSONResponseType);
-                    return request;
+                    object objResponse = JsonConvert.DeserializeObject<Employee>(strsb);
 
-                    //return objResponse;
+                    return objResponse;
                 }
             }
             catch (Exception e)
