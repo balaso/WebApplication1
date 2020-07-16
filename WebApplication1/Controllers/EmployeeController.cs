@@ -7,6 +7,7 @@ using System.Net;
 using System.Net.Http;
 using System.Text;
 using System.Web.Http;
+using System.Web.Script.Serialization;
 using WebApplication1.Models;
 
 namespace WebApplication1.Controllers
@@ -60,26 +61,26 @@ namespace WebApplication1.Controllers
             public Employee addEmployee(Employee employee)
         {
             employee.EmployeeId = employeeId;
-
+            int id = 4;
             employeeId++;
            // employees.Add(employee);
 
             Console.WriteLine(" Employee " + employee);
-           return (Employee)MakeRequest("https://localhost:44373/api/employee", employee, "PUT", "application/json", typeof(Employee));
+           return (Employee)MakeRequest("https://localhost:44373/api/employee/2", id, "GET", "application/json", typeof(Employee));
            // return (IList<Employee>)(Employee)MakeRequest("https://localhost:44373/api/employee", employee, "GET", "application/json", typeof(IList<Employee>));
             //   return employee;
         }
         [HttpPut]
         public Employee updateEmployee(Employee e)
         {
-            return e;// (Employee)MakeRequest("https://localhost:44373/api/employee", e, "PUT", "application/json", typeof(Employee));
+            return e;
         }
         public static object MakeRequest(string requestUrl, object JSONRequest, string JSONmethod, string JSONContentType, Type JSONResponseType)
         {
 
             try
             {
-                HttpWebRequest request = WebRequest.Create(requestUrl) as HttpWebRequest;
+                HttpWebRequest request = WebRequest.Create( requestUrl) as HttpWebRequest;
                 //WebRequest WR = WebRequest.Create(requestUrl);   
               //
                 request.Method = JSONmethod;
@@ -88,7 +89,7 @@ namespace WebApplication1.Controllers
                     request.ContentType = JSONContentType;
                 }
 
-
+                /*** add request body for POST and PUT method ***/
                 if("POST".Equals(JSONmethod, StringComparison.OrdinalIgnoreCase) || "PUT".Equals(JSONmethod, StringComparison.OrdinalIgnoreCase))
                 {
                     string sb = JsonConvert.SerializeObject(JSONRequest);
@@ -97,7 +98,7 @@ namespace WebApplication1.Controllers
                     st.Write(bt, 0, bt.Length);
                     st.Close();
                 }
-
+                
                 using (HttpWebResponse response = request.GetResponse() as HttpWebResponse)
                 {
 
