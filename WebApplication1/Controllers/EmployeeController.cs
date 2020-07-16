@@ -44,6 +44,8 @@ namespace WebApplication1.Controllers
             return employees;
         }
 
+        [HttpGet]
+        [Route("api/employee/{id}")]
         public Employee GetEmployeeDetails(int id)
         {
             //Return a single employee detail  
