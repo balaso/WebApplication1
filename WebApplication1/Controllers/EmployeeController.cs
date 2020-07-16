@@ -12,6 +12,7 @@ using WebApplication1.Models;
 
 namespace WebApplication1.Controllers
 {
+    [RoutePrefix("api/employee")]
     public class EmployeeController : ApiController
     {
         int employeeId = 6;
@@ -38,14 +39,27 @@ namespace WebApplication1.Controllers
                     EmployeeId = 5, EmployeeName = "Manish Sharma", Address = "New Delhi", Department = "HR"
                 },
         };
+        [HttpGet]
         public IList<Employee> GetAllEmployees()
         {
             //Return list of all employees  
             return employees;
         }
+       [HttpGet]
+        [Route("GetInfo")]
+        public Employee GetEmployeeInfo(int id)
+        {
 
+            //Return a single employee detail  
+            var employee = employees.FirstOrDefault(e => e.EmployeeId == id);
+            if (employee == null)
+            {
+                throw new HttpResponseException(Request.CreateResponse(HttpStatusCode.NotFound));
+            }
+            return employee;
+        }
         [HttpGet]
-        [Route("api/employee/{id}")]
+        [Route("{id}")]
         public Employee GetEmployeeDetails(int id)
         {
             //Return a single employee detail  
@@ -65,7 +79,7 @@ namespace WebApplication1.Controllers
             employee.EmployeeId = employeeId;
             int id = 4;
             employeeId++;
-           // employees.Add(employee);
+           this.employees.Add(employee);
 
             Console.WriteLine(" Employee " + employee);
            return (Employee)MakeRequest("https://localhost:44373/api/employee/2", id, "GET", "application/json", typeof(Employee));
