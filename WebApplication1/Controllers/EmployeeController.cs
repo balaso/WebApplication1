@@ -8,6 +8,8 @@ using System.Net.Http;
 using System.Text;
 using System.Web.Http;
 using System.Web.Script.Serialization;
+using WebApplication1.Constants;
+using WebApplication1.Helper;
 using WebApplication1.Models;
 
 namespace WebApplication1.Controllers
@@ -82,7 +84,8 @@ namespace WebApplication1.Controllers
            this.employees.Add(employee);
 
             Console.WriteLine(" Employee: {0}" , employee);
-           return (Employee)MakeRequest("https://localhost:44373/api/employee/2", id, "GET", "application/json", typeof(Employee));
+            string url = RequestConstants.BaseUrl + $"employee/{id}";
+           return (Employee)ApiHelper.MakeRequest(url, id, "GET", RequestConstants.ContentType, typeof(Employee));
            // return (IList<Employee>)(Employee)MakeRequest("https://localhost:44373/api/employee", employee, "GET", "application/json", typeof(IList<Employee>));
             //   return employee;
         }
@@ -91,55 +94,6 @@ namespace WebApplication1.Controllers
         {
             return e;
         }
-        public static object MakeRequest(string requestUrl, object JSONRequest, string JSONmethod, string JSONContentType, Type JSONResponseType)
-        {
-
-            try
-            {
-                HttpWebRequest request = WebRequest.Create( requestUrl) as HttpWebRequest;
-                //WebRequest WR = WebRequest.Create(requestUrl);   
-              //
-                request.Method = JSONmethod;
-                if (!String.IsNullOrEmpty(JSONContentType))
-                {
-                    request.ContentType = JSONContentType;
-                }
-
-                /*** add request body for POST and PUT method ***/
-                if("POST".Equals(JSONmethod, StringComparison.OrdinalIgnoreCase) || "PUT".Equals(JSONmethod, StringComparison.OrdinalIgnoreCase))
-                {
-                    string sb = JsonConvert.SerializeObject(JSONRequest);
-                    Byte[] bt = Encoding.UTF8.GetBytes(sb);
-                    Stream st = request.GetRequestStream();
-                    st.Write(bt, 0, bt.Length);
-                    st.Close();
-                }
-                
-                using (HttpWebResponse response = request.GetResponse() as HttpWebResponse)
-                {
-
-                    if (response.StatusCode != HttpStatusCode.OK) throw new Exception(String.Format(
-                        "Server error (HTTP {0}: {1}).", response.StatusCode,
-                    response.StatusDescription));
-
-                    // DataContractJsonSerializer jsonSerializer = new DataContractJsonSerializer(typeof(Response));
-                    // object objResponse = JsonConvert.DeserializeObject();
-                    Stream stream1 = response.GetResponseStream();
-                    StreamReader sr = new StreamReader(stream1);
-                    //string resp = response.Content.ReadAsStringAsync().Result; 
-                    string strsb = sr.ReadToEnd();
-                    object objResponse = JsonConvert.DeserializeObject(strsb, JSONResponseType); 
-                    //JsonConvert.DeserializeObject<JSONResponseType>(strsb);
-
-                    return objResponse;
-                }
-            }
-            catch (Exception e)
-            {
-
-                Console.WriteLine(e.Message);
-                return null;
-            }
-        }
+        
     }
 }
