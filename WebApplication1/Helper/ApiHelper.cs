@@ -6,6 +6,7 @@ using System.Linq;
 using System.Net;
 using System.Text;
 using System.Web;
+using WebApplication1.Constants;
 
 namespace WebApplication1.Helper
 {
@@ -30,7 +31,7 @@ namespace WebApplication1.Helper
             httpWebRequest.Method = method;
             
         }
-        public static object MakeRequest(string requestUrl, object JSONRequest, string JSONmethod, string JSONContentType, Type JSONResponseType)
+        public static object MakeRequest(string requestUrl, object JSONRequest, Type JSONResponseType, string JSONmethod = RequestConstants.DefaultMenthod, string JSONContentType = RequestConstants.ContentType)
         {
 
             try

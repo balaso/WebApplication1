@@ -85,7 +85,7 @@ namespace WebApplication1.Controllers
 
             Console.WriteLine(" Employee: {0}" , employee);
             string url = RequestConstants.BaseUrl + $"employee/{id}";
-           return (Employee)ApiHelper.MakeRequest(url, id, "GET", RequestConstants.ContentType, typeof(Employee));
+           return (Employee)ApiHelper.MakeRequest(url, id, typeof(Employee));
            // return (IList<Employee>)(Employee)MakeRequest("https://localhost:44373/api/employee", employee, "GET", "application/json", typeof(IList<Employee>));
             //   return employee;
         }
