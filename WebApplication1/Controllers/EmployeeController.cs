@@ -81,7 +81,7 @@ namespace WebApplication1.Controllers
             employeeId++;
            this.employees.Add(employee);
 
-            Console.WriteLine(" Employee " + employee);
+            Console.WriteLine(" Employee: {0}" , employee);
            return (Employee)MakeRequest("https://localhost:44373/api/employee/2", id, "GET", "application/json", typeof(Employee));
            // return (IList<Employee>)(Employee)MakeRequest("https://localhost:44373/api/employee", employee, "GET", "application/json", typeof(IList<Employee>));
             //   return employee;
